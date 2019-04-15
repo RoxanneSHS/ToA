@@ -5,9 +5,18 @@ VERSION ~v2.6~
 
 README ~ToA/readme.%LANGUAGE%.txt~
 
-AUTO_TRA "ToA/Language/%s/D"//%"
-
 ALWAYS
+  ACTION_IF (GAME_IS ~eet~) BEGIN
+    OUTER_SET bg2_chapter = 12
+  END ELSE BEGIN
+    OUTER_SET bg2_chapter = 0
+  END
+  OUTER_FOR (i=1; i<=10; i=i+1) BEGIN
+    OUTER_SET bg2_chapter = bg2_chapter + 1
+    OUTER_SPRINT name_source ~bg2_chapter_%i%~
+    OUTER_SET EVAL ~%name_source%~ = bg2_chapter
+  END
+
 	INCLUDE ~ToA/lib/a7_tools.tpa~
 	INCLUDE ~ToA/lib/EET_functions.tph~
 	
@@ -55,17 +64,10 @@ LANGUAGE ~Polski (Polish) by Aristo~
 BEGIN @1 DESIGNATED 01
 REQUIRE_PREDICATE GAME_IS ~bgt eet tob bg2ee~ @393
 
-ACTION_DEFINE_ARRAY arrayName BEGIN ~ToA/base/baf/ZPALA3.baf~ ~ToA/base/baf/area/AR0700.baf~ ~ToA/base/baf/area/AR5500.baf~ END
-LAF ~EET_CHAPTERS~
-	INT_VAR
-	journal_game = 0 //0 - BG2 (+12); 1 - SoD (+7) (default = 0)
-	journal_patch_mode = 0 //0 - replace with values; 1 - replace with variables (default = 0)
-	STR_VAR
-	journal_array = EVAL ~arrayName~ //array with files to patch (supports: d, dlg, baf, bcs, and any text file; if path points to override COPY_EXISTING is used)
-END
+COMPILE EVALUATE_BUFFER ~ToA/base/area/ZPALA3.baf~
 
-EXTEND_BOTTOM ~AR0700.bcs~ ~ToA/base/baf/area/AR0700.baf~
-EXTEND_BOTTOM ~AR5500.bcs~ ~ToA/base/baf/area/AR5500.baf~
+EXTEND_BOTTOM ~AR0700.bcs~ ~ToA/base/area/AR0700.baf~ EVALUATE_BUFFER
+EXTEND_BOTTOM ~AR5500.bcs~ ~ToA/base/area/AR5500.baf~ EVALUATE_BUFFER
 
 COPY ~ToA/base/2da/ZSCENE1.2DA~ ~override~
 REPLACE 74518 @384

@@ -88,7 +88,7 @@ END
 
 IF
   Global("ZEndCutScene","GLOBAL",2)
-  GlobalLT("CHAPTER","GLOBAL",8)
+  GlobalLT("CHAPTER","GLOBAL",%bg2_chapter_8%)
 THEN
   RESPONSE #100
     ClearAllActions()
@@ -188,7 +188,7 @@ END
 
 IF
   Global("ZEndCutScene","GLOBAL",2)
-  GlobalGT("CHAPTER","GLOBAL",7)
+  GlobalGT("CHAPTER","GLOBAL",%bg2_chapter_7%)
 THEN
   RESPONSE #100
     ClearAllActions()
