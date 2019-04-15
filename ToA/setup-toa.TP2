@@ -3,7 +3,7 @@ AUTHOR ~whiteagnus@baldursgatemods.de~
 //Original Author: Naurandir
 VERSION ~v2.6~
 
-README ~ToA/readme.%LANGUAGE%.txt~
+AUTO_TRA "ToA/Language/%s/D"//%"
 
 ALWAYS
   ACTION_IF (GAME_IS ~eet~) BEGIN
