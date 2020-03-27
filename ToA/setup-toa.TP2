@@ -1,6 +1,6 @@
 BACKUP ~ToA/Backup~
-AUTHOR ~whiteagnus@baldursgatemods.de~
-//Original Author: Naurandir
+AUTHOR ~Naurandir~
+
 VERSION ~v3.0~
 
 AUTO_TRA "ToA/Language/%s/D"//%"
