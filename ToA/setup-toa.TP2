@@ -1,7 +1,7 @@
 BACKUP ~ToA/Backup~
 AUTHOR ~whiteagnus@baldursgatemods.de~
 //Original Author: Naurandir
-VERSION ~v2.6~
+VERSION ~v3.0~
 
 AUTO_TRA "ToA/Language/%s/D"//%"
 
@@ -17,7 +17,6 @@ ALWAYS
     OUTER_SET EVAL ~%name_source%~ = bg2_chapter
   END
 
-	INCLUDE ~ToA/lib/a7_tools.tpa~
 	INCLUDE ~ToA/lib/EET_functions.tph~
 	
 	ACTION_DEFINE_ARRAY charsetsReloadArray BEGIN setup journal END
@@ -62,7 +61,7 @@ LANGUAGE ~Polski (Polish) by Aristo~
          ~ToA/language/polish/journal.tra~
 		 
 BEGIN @1 DESIGNATED 01
-REQUIRE_PREDICATE GAME_IS ~bgt eet tob bg2ee~ @393
+REQUIRE_PREDICATE GAME_IS ~eet bg2ee~ @393
 
 COMPILE EVALUATE_BUFFER ~ToA/base/area/ZPALA3.baf~
 
@@ -1393,98 +1392,13 @@ COPY ~ToA/base/sto/Z_EMIR.STO~ ~override~
 COPY ~ToA/base/sto/Z_MEFIZ.STO~ ~override~
   SAY 0x0c @260
 
-MKDIR ~ToA/bif~
-  
-LAF HANDLE_TILECONV
-  INT_VAR
-  STR_VAR
-    input_path    = ~ToA/base/tbc~
-	output_path	  = ~ToA/bif~
-END
-
-LAF HANDLE_AUDIO
-  INT_VAR
-  STR_VAR
-    audio_path = ~ToA/base/ogg~
-    oggdec_path = ~ToA/tools/win32~
-    sox_path = ~ToA/tools/macosx~
-	output_path	  = ~ToA/bif~
-END
-
-COPY ~ToA/base/bam~ ~ToA/bif~
-COPY ~ToA/base/bmp~ ~ToA/bif~
-COPY ~ToA/base/mos/%res%~ ~ToA/bif~
-COPY ~ToA/base/wed~ ~ToA/bif~
-
-MAKE_BIFF ~ToA~ BEGIN ~ToA/bif~ ~^.*$~ END
-
-ACTION_FOR_EACH var IN bmp bam mos tis wav wed BEGIN
-	ACTION_BASH_FOR ~ToA/bif~ ~^.+\.%var%$~ BEGIN
-		DELETE +  ~%BASH_FOR_FILESPEC%~
-	END
-END
-
-LAF REMOVE_DIRECTORY STR_VAR dir_name = ~ToA/bif~ END
+COPY ~ToA/base/PVRZ~ ~override~
+COPY ~ToA/base/mos~ ~override~
+COPY ~ToA/base/wed~ ~override~
+COPY ~ToA/base/bmp~ ~override~
+COPY ~ToA/base/bam~ ~override~
 
 ADD_JOURNAL @999990 @999991 @999992 @999993 @999994 @999995 @999996 @999997 @999998 @999999
-
-BEGIN @10000 
-REQUIRE_PREDICATE MOD_IS_INSTALLED ~ToA/setup-toa.TP2~ 1  @10001
-DESIGNATED 02 GROUP @10002
-
-ACTION_FOR_EACH filename IN ZMYST01 ZMYST02 ZMYST03 ZMYST04 ZMYST05 ZMYST07 ZMYST08 ZMYST09 ZMYST10 ZMYST11 ZMYST12 ZNOMOR01 ZNOMOR02 ZNOMOR03 ZNOMOR04 ZNOMOR05 ZNOMOR06 ZNOMOR07 ZNOMOR08 ZNOMOR09 ZNOMOR10 ZNOMOR11 ZNOMOR12 ZNOMOR13 ZNOMOR14 ZNOMOR15 ZNOMOR16 ZNOMOR17 ZNOMOR18 ZNOMOR19 ZNOMOR20 ZNOMOR21 ZNOMOR22 ZNOMOR23 ZNOMOR24 ZNOMOR25 ZNOMOR26 ZNOMOR27 ZNOMOR28 ZNOMOR29 ZNOMOR30 ZNOMOR31 ZNOMOR32 ZNOMOR33 ZNOMOR34 ZNOMOR35 ZNOMOR36 ZNOMOR37 ZNOMOR38 ZNOMOR39 ZNOMOR40 ZNOMOR41 ZNOMOR42 ZNOMOR43 ZNOMOR44 ZNOMOR45 ZNOMOR46 ZNOMOR47 ZNOMOR48 ZNOMOR49 ZNOMOR50 ZNOMOR51 ZNOMOR52 ZNOMOR53 ZNOMOR54 ZNOMOR55 ZNOMOR56 ZNOMOR57 ZNOMOR58 ZNOMOR59 BEGIN
-COPY ~ToA/base/blank.wav~ ~override/%filename%.wav~
-END
-
-BEGIN @10003
-REQUIRE_PREDICATE MOD_IS_INSTALLED ~ToA/setup-toa.TP2~ 1  @10001
-DESIGNATED 03 GROUP @10002
-SUBCOMPONENT @10004
-COPY_EXISTING ~AR0700.bcs~ ~override~
-REPLACE_BCS_BLOCK ~ToA/base/baf/area/AR0700.baf~ ~ToA/base/blank.bcs~
-
-BEGIN @10005
-REQUIRE_PREDICATE MOD_IS_INSTALLED ~ToA/setup-toa.TP2~ 1  @10001
-DESIGNATED 04 GROUP @10002
-SUBCOMPONENT @10004
-COPY_EXISTING ~AR5500.bcs~ ~override~
-REPLACE_BCS_BLOCK ~ToA/base/baf/area/AR5500.baf~ ~ToA/base/blank.bcs~
-
-BEGIN @392
-REQUIRE_PREDICATE !GAME_IS ~bg2ee eet~ @394
-DESIGNATED 05 GROUP @10002
-
-OUTER_PATCH_SAVE orig_bytes_1 ~~ BEGIN
-    INSERT_BYTES 0x000 0x9
-    WRITE_LONG   0x000 0xdc82c766
-    WRITE_LONG   0x004 0x80000005
-    WRITE_BYTE   0x008 0x00
-END
-
-OUTER_PATCH_SAVE patch_bytes_1 ~~ BEGIN
-    INSERT_BYTES 0x000 0x9
-    WRITE_LONG   0x000 0xdc82c766
-    WRITE_LONG   0x004 0xe0000005
-    WRITE_BYTE   0x008 0x00
-END
-
-COPY bgmain.exe bgmain.exe
-    READ_ASCII 0x002739d2 target_bytes_1 ELSE 0 (0x9)
-    PATCH_IF (~%target_bytes_1%~ STRING_EQUAL ~%orig_bytes_1%~)
-    THEN BEGIN
-        WRITE_ASCIIE 0x002739d2 ~%patch_bytes_1%~ (0x9)
-        INNER_ACTION BEGIN
-            COPY ~ToA/base/toolscrl.bam~ ~override~
-        END
-    END ELSE
-    PATCH_IF (~%target_bytes_1%~ STRING_EQUAL ~%patch_bytes_1%~)
-    THEN BEGIN
-        PATCH_PRINT ~Patch already applied. Skipping ...~
-    END ELSE INNER_ACTION BEGIN FAIL ~Target bytes don't match. Aborting ...~ END
-BUT_ONLY
-
-
-
 
 BEGIN @10006
 REQUIRE_PREDICATE MOD_IS_INSTALLED ~ToA/setup-toa.TP2~ 1  @10001
