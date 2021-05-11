@@ -1,7 +1,7 @@
 BACKUP ~ToA/Backup~
 AUTHOR ~Naurandir~
 
-VERSION ~v3.0~
+VERSION ~v3.1~
 
 AUTO_TRA "ToA/Language/%s/D"//%"
 
